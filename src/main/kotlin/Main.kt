@@ -1,6 +1,5 @@
 package CampoMinato
 
-import CampoMinato.Model.CellFactory
 import CampoMinato.View.CampoMinatoController
 import javafx.application.Application
 import javafx.stage.Stage

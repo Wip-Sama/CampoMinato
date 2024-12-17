@@ -29,10 +29,11 @@
             </HBox>
          </bottom>
          <top>
-            <HBox alignment="CENTER" fillHeight="false" prefHeight="60.0" prefWidth="0.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="60.0" BorderPane.alignment="CENTER">
                <children>
                   <Label fx:id="score_label" text="ciao" textFill="#d4d4d4" />
                   <ImageView fx:id="status_image" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label fx:id="time_label" text="Label" textFill="#d4d4d4" />
                </children>
             </HBox>
          </top>
@@ -65,6 +66,21 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="NEVER" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="NEVER" />
               </rowConstraints>
+               <children>
+                  <Button focusTraversable="false" mnemonicParsing="false" text="💣" visible="false" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="🚩" visible="false" GridPane.columnIndex="1" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="1" visible="false" GridPane.columnIndex="2" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="2" visible="false" GridPane.columnIndex="3" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="8" visible="false" GridPane.columnIndex="9" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="7" visible="false" GridPane.columnIndex="8" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="6" visible="false" GridPane.columnIndex="7" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="5" visible="false" GridPane.columnIndex="6" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="4" visible="false" GridPane.columnIndex="5" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="3" visible="false" GridPane.columnIndex="4" />
+                  <Button disable="true" focusTraversable="false" mnemonicParsing="false" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="❓" visible="false" GridPane.rowIndex="1" />
+                  <Button focusTraversable="false" mnemonicParsing="false" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
             </GridPane>
          </left>
       </BorderPane>

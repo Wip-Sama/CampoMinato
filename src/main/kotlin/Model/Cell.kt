@@ -1,33 +1,25 @@
 package CampoMinato.Model
 
 import CampoMinato.Model.Cell_Statuses.Hidden
-import javafx.beans.property.ReadOnlyProperty
+import CampoMinato.Model.Enums.CellStates
+import CampoMinato.Model.States.CellState
+import CampoMinato.Model.States.GameState
 import javafx.beans.property.SimpleObjectProperty
-
-enum class Types {
-    BOMB,
-    EMPTY
-}
-
-enum class Statuses {
-    HIDDEN,
-    REVEALED,
-    FLAGGED,
-    DOUBTED,
-    EXPLODED
-}
 
 //Flyweight (non più, se cambia lo stato mi sevre un proxi e non ho voglia di crearlo)
 abstract class Cell {
     abstract val isBomb: Boolean
+    val stateProperty = SimpleObjectProperty<CellState>(Hidden)
 
-    constructor(state: CellStatus) {
+    constructor(state: CellState) {
         this.stateProperty.set(state)
     }
 
     constructor()
 
-    val stateProperty = SimpleObjectProperty<CellStatus>(Hidden())
+    open fun getDisplayValue(): String {
+        return stateProperty.get().getDisplayValue(this)
+    }
 
     open fun isHidden() : Boolean {
         return stateProperty.get().isHidden()
@@ -41,11 +33,15 @@ abstract class Cell {
         return stateProperty.get().isFlagged()
     }
 
+    open fun isExploded() : Boolean {
+        return stateProperty.get().isExploded()
+    }
+
     open fun isRevealed() : Boolean {
         return stateProperty.get().isRevealed()
     }
 
-    fun getStatusType(): Statuses {
+    open fun getStatusType(): CellStates {
         return stateProperty.get().getStatusType()
     }
 
@@ -55,6 +51,14 @@ abstract class Cell {
 
     fun rightClick() {
         stateProperty.get().rightClick(this)
+    }
+
+    fun doubleLeftClick() {
+        stateProperty.get().doubleLeftClick(this)
+    }
+
+    override fun toString(): String {
+        return stateProperty.get().toString(this)
     }
 
     abstract fun clone(): Cell

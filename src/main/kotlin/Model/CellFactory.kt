@@ -1,96 +1,71 @@
 package CampoMinato.Model
 
-import CampoMinato.Model.Cell_Statuses.Doubted
-import CampoMinato.Model.Cell_Statuses.Flagged
-import CampoMinato.Model.Cell_Statuses.Hidden
-import CampoMinato.Model.Cell_Statuses.Revealed
-import CampoMinato.Model.Cell_Types.BombCell
-import CampoMinato.Model.Cell_Types.EmptyCell
+import CampoMinato.Model.Cell_Statuses.*
+import CampoMinato.Model.Enums.CellStates
+import CampoMinato.Model.Enums.CellTypes
+import CampoMinato.Model.States.Cell_Types.BombCell
+import CampoMinato.Model.States.Cell_Types.EmptyCell
+import CampoMinato.Model.States.CellState
 
-//Singleton
 object CellFactory {
-    //here an array of 2 int
-//    private var initialized_cells = HashMap<Array<Int>, Cell>()
-
-    private var new_cell = Array(2) {Types.EMPTY.ordinal; Statuses.HIDDEN.ordinal}
+    private var new_cell = Array(2) { CellTypes.EMPTY.ordinal; CellStates.HIDDEN.ordinal}
 
     fun setTypeBomb(): CellFactory {
-        new_cell[0] = Types.BOMB.ordinal
+        new_cell[0] = CellTypes.BOMB.ordinal
         return CellFactory
     }
 
     fun setTypeEmpty(): CellFactory {
-        new_cell[0] = Types.EMPTY.ordinal
+        new_cell[0] = CellTypes.EMPTY.ordinal
         return CellFactory
     }
 
     fun setStatusHidden(): CellFactory {
-        new_cell[1] = Statuses.HIDDEN.ordinal
+        new_cell[1] = CellStates.HIDDEN.ordinal
         return CellFactory
     }
 
     fun setStatusDoubted(): CellFactory {
-        new_cell[1] = Statuses.DOUBTED.ordinal
+        new_cell[1] = CellStates.DOUBTED.ordinal
         return CellFactory
     }
 
     fun setStatusRevealed(): CellFactory {
-        new_cell[1] = Statuses.REVEALED.ordinal
+        new_cell[1] = CellStates.REVEALED.ordinal
         return CellFactory
     }
 
     fun setStatusFlagged(): CellFactory {
-        new_cell[1] = Statuses.FLAGGED.ordinal
+        new_cell[1] = CellStates.FLAGGED.ordinal
+        return CellFactory
+    }
+
+    fun setStatusExploded(): CellFactory {
+        new_cell[1] = CellStates.EXPLODED.ordinal
         return CellFactory
     }
 
     fun build(): Cell {
-//        Il problema è che se una cella varia lo stato devo clonarla per evitare che
-//        cambia lo stato ovunque e riutilizzata quella cella quindi mi si incvalida la "cache"
-//        if (initialized_cells.containsKey(new_cell)) {
-//            return initialized_cells[new_cell]!!
-//        } else {
-//            val state: CellStatus = when (new_cell[1]) {
-//                Statuses.HIDDEN.ordinal -> Hidden()
-//                Statuses.DOUBTED.ordinal -> Doubted()
-//                Statuses.REVEALED.ordinal -> Revealed()
-//                Statuses.FLAGGED.ordinal -> Flagged()
-//                else -> {
-//                    Hidden()
-//                }
-//            }
-//
-//            val cell = when (new_cell[0]) {
-//                Types.BOMB.ordinal -> BombCell(state)
-//                Types.EMPTY.ordinal -> EmptyCell(state)
-//                else -> EmptyCell(state)
-//            }
-//
-//            initialized_cells[new_cell] = cell
-//            new_cell = Array(2) {Types.EMPTY.ordinal; Statuses.HIDDEN.ordinal}
-//            return cell
-//        }
-
-        val state: CellStatus = when (new_cell[1]) {
-            Statuses.HIDDEN.ordinal -> Hidden()
-            Statuses.DOUBTED.ordinal -> Doubted()
-            Statuses.REVEALED.ordinal -> Revealed()
-            Statuses.FLAGGED.ordinal -> Flagged()
+        val state: CellState = when (new_cell[1]) {
+            CellStates.HIDDEN.ordinal -> Hidden
+            CellStates.DOUBTED.ordinal -> Doubted
+            CellStates.REVEALED.ordinal -> Revealed
+            CellStates.FLAGGED.ordinal -> Flagged
+            CellStates.EXPLODED.ordinal -> Exploded
             else -> {
-                Hidden()
+                Hidden
             }
         }
 
         val cell = when (new_cell[0]) {
-            Types.BOMB.ordinal -> BombCell(state)
-            Types.EMPTY.ordinal -> EmptyCell(state)
+            CellTypes.EMPTY.ordinal -> EmptyCell(state)
+            CellTypes.BOMB.ordinal -> BombCell(state)
             else -> EmptyCell(state)
         }
 
-        new_cell = Array(2) {Types.EMPTY.ordinal; Statuses.HIDDEN.ordinal}
+        new_cell = Array(2) { CellTypes.EMPTY.ordinal; CellStates.HIDDEN.ordinal}
 
         return cell
     }
-
 }
 
