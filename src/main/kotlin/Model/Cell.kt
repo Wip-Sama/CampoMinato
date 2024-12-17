@@ -3,7 +3,6 @@ package CampoMinato.Model
 import CampoMinato.Model.Cell_Statuses.Hidden
 import CampoMinato.Model.Enums.CellStates
 import CampoMinato.Model.States.CellState
-import CampoMinato.Model.States.GameState
 import javafx.beans.property.SimpleObjectProperty
 
 //Flyweight (non più, se cambia lo stato mi sevre un proxi e non ho voglia di crearlo)

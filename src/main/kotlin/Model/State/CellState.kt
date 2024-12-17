@@ -1,6 +1,7 @@
 package CampoMinato.Model.States
 
 import CampoMinato.Model.Cell
+import CampoMinato.Model.CellFactory
 import CampoMinato.Model.Enums.CellStates
 
 abstract class CellState() {
@@ -22,6 +23,7 @@ abstract class CellState() {
 
     open fun isExploded() : Boolean {
         return false
+        var ciao = CellFactory.build()
     }
 
     //Does nothing by default

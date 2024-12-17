@@ -17,6 +17,7 @@ object Revealed : CellState() {
 
     override fun leftClick(cell: Cell) {
         // Do nothing
+        println("here")
     }
 
     override fun rightClick(cell: Cell) {
@@ -25,6 +26,9 @@ object Revealed : CellState() {
 
     override fun doubleLeftClick(cell: Cell) {
         println("Revealed neighbor cells")
+        GameBoard.getCellPosition(cell).let { (x, y) ->
+            GameBoard.revealNeighbors(x, y)
+        }
     }
 
     override fun getStatusType(): CellStates {

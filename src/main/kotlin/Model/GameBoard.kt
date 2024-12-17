@@ -100,6 +100,18 @@ object GameBoard {
         return bombs
     }
 
+    fun revealNeighbors(x: Int, y: Int) {
+        for (i in -1..1) {
+            for (j in -1..1) {
+                if (x + i in 0 until rows && y + j in 0 until columns) {
+                    if (cells[x + i][y + j].isHidden()) {
+                        cells[x + i][y + j].leftClick()
+                    }
+                }
+            }
+        }
+    }
+
     fun discoverBombs(cell: Cell) {
         val (x, y) = getCellPosition(cell)
         if (searchBombs(x, y) == 0) {

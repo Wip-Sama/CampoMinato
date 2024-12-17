@@ -1,15 +1,18 @@
 package CampoMinato.View
 
 import CampoMinato.Model.GameBoard
+import javafx.animation.PauseTransition
+import javafx.css.PseudoClass
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
-import javafx.scene.control.Button
-import javafx.scene.layout.GridPane
 import javafx.scene.Scene
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
+import javafx.scene.layout.GridPane
 import javafx.stage.Stage
+import javafx.util.Duration
 
 class CampoMinatoController {
     @FXML
@@ -28,9 +31,6 @@ class CampoMinatoController {
     private lateinit var score_label: Label
 
     @FXML
-    private lateinit var time_label: Label
-
-    @FXML
     private lateinit var status_image: ImageView
 
     private fun updateAllButtons() {
@@ -41,17 +41,21 @@ class CampoMinatoController {
                     .first { GridPane.getRowIndex(it) == y && GridPane.getColumnIndex(it) == x }
 
                 val cell = GameBoard.getCell(x, y)
+                val bombs = GameBoard.searchBombs(x, y)
 
                 button.text = cell.getDisplayValue()
-                button.isDisable = cell.isRevealed()
+                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..5 && cell.isRevealed())
+                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 6 && cell.isRevealed())
+                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
 
                 cell.stateProperty.addListener { _, _, _ ->
                     button.text = cell.getDisplayValue()
-                    button.isDisable = cell.isRevealed()
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..5 && cell.isRevealed())
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 6 && cell.isRevealed())
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
                 }
             }
         }
-//        GameBoard.hideAllCells()
         updateStatus()
     }
 
@@ -78,11 +82,25 @@ class CampoMinatoController {
                 button.text = ""
                 button.setPrefSize(50.0, 50.0)
 
+                val singlePressPause = PauseTransition(Duration.millis(100.0))
+
+                singlePressPause.onFinished = EventHandler {
+                    GameBoard.getCell(x, y).leftClick()
+                    updateStatus()
+                }
+
                 button.onMouseClicked = EventHandler {
+                    val cell = GameBoard.getCell(x, y)
                     if (it.button.name == "SECONDARY") {
-                        GameBoard.getCell(x, y).rightClick()
+                        cell.rightClick()
                     } else {
-                        GameBoard.getCell(x, y).leftClick()
+                        if (it.clickCount == 1) {
+                            singlePressPause.play()
+                        }
+                        if (it.clickCount == 2) {
+                            singlePressPause.stop()
+                            cell.doubleLeftClick()
+                        }
                     }
                     updateStatus()
                 }
@@ -90,8 +108,10 @@ class CampoMinatoController {
                 GameBoard.getCell(x, y).stateProperty.addListener { _, _, _ ->
                     val cell = GameBoard.getCell(x, y)
                     button.text = cell.getDisplayValue()
-                    button.isDisable = cell.isRevealed()
-
+                    val bombs = GameBoard.searchBombs(x, y)
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..5 && cell.isRevealed())
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 6 && cell.isRevealed())
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
                 }
 
                 game_grid.add(button, x, y)
@@ -101,6 +121,7 @@ class CampoMinatoController {
         // Initialize the buttons
         new_game.onMouseClicked = EventHandler {
             GameBoard.newGame()
+            GameBoard.hideAllCells()
             updateAllButtons()
         }
 
