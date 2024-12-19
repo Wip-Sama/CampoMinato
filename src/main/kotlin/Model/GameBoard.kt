@@ -1,203 +1,121 @@
 package CampoMinato.Model
 
-import CampoMinato.Model.Cell_Statuses.Hidden
-import CampoMinato.Model.Cell_Statuses.Revealed
 import CampoMinato.Model.State.Game_states.Ongoing
-import javafx.stage.FileChooser
-import java.io.File
+import CampoMinato.Model.States.GameState
+import javafx.beans.property.SimpleObjectProperty
+import kotlin.properties.Delegates
 
 //Prototype
-object GameBoard {
-    private val mine_filter = FileChooser.ExtensionFilter("Mine Files", "*.minesweep")
-    var bombs = 10
-    var rows = 10
-    var columns = 10
-    var flags = 0
-    private var gameState = Ongoing
-    private lateinit var cells : Array<Array<Cell>>
+class GameBoard {
+    internal val gameStateProperty = SimpleObjectProperty<GameState>(Ongoing)
+    var cells : Array<Array<Cell>>
+        private set
+    var rows by Delegates.notNull<Int>()
+        private set
+    var columns by Delegates.notNull<Int>()
+        private set
+    var bombs by Delegates.notNull<Int>()
+        private set
 
-    init {
-        newGame()
+    constructor(rows: Int, columns: Int, bombs: Int, safeCell: Pair<Int, Int>) {
+        this.rows = rows
+        this.columns = columns
+        this.bombs = bombs
+        cells = Array(rows) { Array(columns) { CellFactory.build() } }
+        setBombs(safeCell)
+    }
+
+    constructor(rows: Int, columns: Int, bombs: Int, grid: String) {
+        this.rows = rows
+        this.columns = columns
+        this.bombs = bombs
+        cells = Array(rows) { x ->
+            Array(columns) { y ->
+                val char = grid[x * columns + y]
+                CellFactory.setTypeFromLetter(char)
+                CellFactory.setStatusFromLetter(char)
+                CellFactory.build()
+            }
+        }
     }
 
     private fun setBombs() {
-        val randomList = (0..<(rows*columns)).shuffled().take(bombs)
+        val randomList = (0..<(rows * columns)).shuffled().take(bombs)
         for (i in randomList) {
-            val x = i / 10
-            val y = i % 10
+            val x = i / columns
+            val y = i % columns
+            cells[x][y] = CellFactory.setTypeBomb().build()
+        }
+    }
+
+    private fun setBombs(safeCell: Pair<Int, Int>) {
+        val randomList = (0..<(rows * columns)).shuffled().filter { it != safeCell.first * columns + safeCell.second }.take(bombs)
+        for (i in randomList) {
+            val x = i / columns
+            val y = i % columns
             cells[x][y] = CellFactory.setTypeBomb().build()
         }
     }
 
     fun isOngoing() : Boolean {
-        return gameState.isOngoing()
+        return gameStateProperty.get().isOngoing()
     }
 
     fun isEnded() : Boolean {
-        return gameState.isEnded()
-    }
-
-    fun countFlags() {
-        flags = 0
-        for (x in 0 until rows) {
-            for (y in 0 until columns) {
-                if (cells[x][y].isFlagged()) {
-                    flags++
-                }
-            }
-        }
-    }
-
-    fun newGame() {
-        cells = Array(10) { Array(10) { CellFactory.build() } }
-        setBombs()
+        return gameStateProperty.get().isEnded()
     }
 
     fun won(): Boolean {
-        for (x in 0 until rows) {
-            for (y in 0 until columns) {
-                if (cells[x][y].isHidden() && !cells[x][y].isBomb) {
-                    return false
-                }
-            }
-        }
-        return true
+        return gameStateProperty.get().won(this)
     }
 
     fun lose(): Boolean {
-        for (x in 0 until rows) {
-            for (y in 0 until columns) {
-                if (cells[x][y].isExploded()) {
-                    return true
-                }
-            }
-        }
-        return false
+        return gameStateProperty.get().lose(this)
     }
 
-    fun getCellPosition(cell: Cell): Pair<Int, Int> {
-        for (x in 0..<rows) {
-            for (y in 0..<columns) {
-                if (cells[x][y] == cell) {
-                    return Pair(x, y)
-                }
-            }
-        }
-        return Pair(-1, -1)
+    fun countFlags() : Int {
+        return gameStateProperty.get().countFlags(this)
     }
 
     fun searchBombs(x: Int, y: Int): Int {
-        var bombs = 0
-        for (i in -1..1) {
-            for (j in -1..1) {
-                if (x + i in 0 until rows && y + j in 0 until columns) {
-                    if (cells[x + i][y + j].isBomb) {
-                        bombs++
-                    }
-                }
-            }
-        }
-        return bombs
+        return gameStateProperty.get().searchBombs(this, x, y)
     }
 
     fun revealNeighbors(x: Int, y: Int) {
-        for (i in -1..1) {
-            for (j in -1..1) {
-                if (x + i in 0 until rows && y + j in 0 until columns) {
-                    if (cells[x + i][y + j].isHidden()) {
-                        cells[x + i][y + j].leftClick()
-                    }
-                }
-            }
-        }
+        gameStateProperty.get().revealNeighbors(this, x, y)
     }
 
-    fun discoverBombs(cell: Cell) {
-        val (x, y) = getCellPosition(cell)
-        if (searchBombs(x, y) == 0) {
-            for (i in -1..1) {
-                for (j in -1..1) {
-                    if (x + i in 0 until rows && y + j in 0 until columns) {
-                        if (cells[x + i][y + j].isHidden()) {
-                            cells[x + i][y + j].leftClick()
-                        }
-                    }
-                }
-            }
-        }
+    fun revealEmptyCells(cell: Cell) {
+        gameStateProperty.get().revealEmptyCells(this, cell)
+    }
+
+    fun getCellPosition(cell: Cell): Pair<Int, Int> {
+        return gameStateProperty.get().getCellPosition(this, cell)
     }
 
     fun revealAllBombs() {
-        for (x in 0 until rows) {
-            for (y in 0 until columns) {
-                if (cells[x][y].isBomb) {
-                    cells[x][y].leftClick()
-                }
-            }
-        }
+        gameStateProperty.get().revealAllBombs(this)
     }
 
     fun revealAllCells() {
-        for (x in 0 until rows) {
-            for (y in 0 until columns) {
-                cells[x][y].stateProperty.set(Revealed)
-            }
-        }
+        gameStateProperty.get().revealAllCells(this)
     }
 
     fun hideAllCells() {
-        for (x in 0 until rows) {
-            for (y in 0 until columns) {
-                cells[x][y].stateProperty.set(Hidden)
-            }
-        }
+        gameStateProperty.get().hideAllCells(this)
     }
 
-    fun getCell(x: Int, y: Int): Cell {
-        return cells[x][y]
+    private fun gridToString() : String {
+        return cells.joinToString("") { it.joinToString("") { cell -> cell.toString() } }
     }
 
-    fun loadGame() {
-        val fc = FileChooser()
-        fc.extensionFilters.add(mine_filter)
-        val selectedFile: File? = fc.showOpenDialog(null)
-        selectedFile?.let { it ->
-            val data = it.readLines()[0]
-            data.split(",").let { (r, c, bombs, time, grid) ->
-                this.rows = r.toInt()
-                this.columns = c.toInt()
-                this.bombs = bombs.toInt()
-                //Set time
-                cells = Array(rows) { Array(columns) { CellFactory.build() } }
-                for (x in 0 until rows) {
-                    for (y in 0 until columns) {
-                        val s = grid[x * columns + y].toString()
-
-                        if (s.uppercase() == s)
-                            CellFactory.setTypeBomb()
-                        else
-                            CellFactory.setTypeEmpty()
-
-                        when (s.uppercase()) {
-                            "D" -> cells[y][x] = CellFactory.setStatusDoubted().build()
-                            "E" -> cells[y][x] = CellFactory.setStatusExploded().build()
-                            "F" -> cells[y][x] = CellFactory.setStatusFlagged().build()
-                            "H" -> cells[y][x] = CellFactory.setStatusHidden().build()
-                            "R" -> cells[y][x] = CellFactory.setStatusRevealed().build()
-                        }
-                    }
-                }
-            }
-        }
+    override fun toString() : String {
+        return "${rows},${columns},${bombs},${gridToString()}"
     }
 
-    fun saveGame() {
-        val fileChooser = FileChooser()
-        fileChooser.extensionFilters.add(mine_filter)
-        val file: File? = fileChooser.showSaveDialog(null)
-        file?.let {
-            val data = "${rows},${columns},${bombs},${System.currentTimeMillis()},${cells.joinToString("") { it.joinToString("") { cell -> cell.toString() } }}"
-            it.writeText(data)
-        }
+    fun clone() : GameBoard {
+        val newBoard = GameBoard(rows, columns, bombs, toString())
+        newBoard.gameStateProperty.set(gameStateProperty.get())
+        return newBoard
     }
 }

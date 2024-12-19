@@ -20,7 +20,7 @@ object Hidden : CellState() {
             cell.stateProperty.set(Exploded)
         } else {
             cell.stateProperty.set(Revealed)
-            GameBoard.discoverBombs(cell)
+            GameController.getGameBoard().value.revealEmptyCells(cell)
         }
     }
 

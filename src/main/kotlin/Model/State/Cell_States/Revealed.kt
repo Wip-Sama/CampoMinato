@@ -17,7 +17,6 @@ object Revealed : CellState() {
 
     override fun leftClick(cell: Cell) {
         // Do nothing
-        println("here")
     }
 
     override fun rightClick(cell: Cell) {
@@ -25,9 +24,8 @@ object Revealed : CellState() {
     }
 
     override fun doubleLeftClick(cell: Cell) {
-        println("Revealed neighbor cells")
-        GameBoard.getCellPosition(cell).let { (x, y) ->
-            GameBoard.revealNeighbors(x, y)
+        GameController.getGameBoard().value.getCellPosition(cell).let { (x, y) ->
+            GameController.getGameBoard().value.revealNeighbors(x, y)
         }
     }
 
@@ -36,8 +34,8 @@ object Revealed : CellState() {
     }
 
     override fun getDisplayValue(cell: Cell): String {
-        GameBoard.getCellPosition(cell).let { (x, y) ->
-            val bombCount = GameBoard.searchBombs(x, y)
+        GameController.getGameBoard().value.getCellPosition(cell).let { (x, y) ->
+            val bombCount = GameController.getGameBoard().value.searchBombs(x, y)
             if (bombCount == 0)
                 return ""
             return bombCount.toString()

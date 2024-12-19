@@ -7,6 +7,7 @@ import javafx.stage.Stage
 class CampoMinato : Application() {
     override fun start(primaryStage: Stage) {
         CampoMinatoController().start(primaryStage)
+        primaryStage.isResizable = false
     }
 }
 

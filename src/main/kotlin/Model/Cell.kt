@@ -5,7 +5,6 @@ import CampoMinato.Model.Enums.CellStates
 import CampoMinato.Model.States.CellState
 import javafx.beans.property.SimpleObjectProperty
 
-//Flyweight (non più, se cambia lo stato mi sevre un proxi e non ho voglia di crearlo)
 abstract class Cell {
     abstract val isBomb: Boolean
     val stateProperty = SimpleObjectProperty<CellState>(Hidden)

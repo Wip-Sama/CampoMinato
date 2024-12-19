@@ -4,7 +4,6 @@ plugins {
     id("org.openjfx.javafxplugin") version "0.1.0"
     id("org.beryx.jlink") version "3.1.0-rc-1"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
-
 }
 
 kotlin {
@@ -23,7 +22,19 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
     implementation("org.openjfx:javafx-controls:22")
     implementation("org.openjfx:javafx-fxml:22")
+}
 
+javafx {
+    version = "22"
+    modules = listOf(
+        "javafx.controls",
+        "javafx.fxml",
+        "javafx.graphics",
+        "javafx.media",
+        "javafx.swing",
+        "javafx.web",
+        "javafx.base"
+    )
 }
 
 tasks.test {

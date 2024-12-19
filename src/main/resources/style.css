@@ -1,9 +1,8 @@
 .root {
     -fx-font-family: CCVictorySpeechW00-Regular;
-    -fx-text-fill: -fu-my-white;
     -fu-my-white: #d4d4d4;
-    -fu-my-red: #a10000;
     -fu-my-grey: #9c9c9c;
+    -fu-my-red: #a10000;
 }
 
 .button {
@@ -12,24 +11,18 @@
 }
 
 .button:hover {
-    -fx-background-color: transparent;
     -fx-text-fill: -fu-my-grey;
 }
 
 .button:pressed {
-    -fx-background-color: transparent;
     -fx-text-fill: -fu-my-red;
 }
 
-.separator {
-    -fx-pref-height: 20;
-}
-
 .separator .line {
-    -fx-border-color: transparent transparent transparent transparent,
-    transparent transparent transparent -fu-my-white;
+    -fx-border-color:   transparent transparent transparent transparent,
+                        transparent transparent transparent -fu-my-white;
     -fx-border-width: 0, 2;
-    -fx-border-insets: 0, 0 0 0 0;
+    -fx-border-insets: 0, 0;
     -fx-border-radius: 10
 }
 
@@ -46,11 +39,11 @@
 .grid .button {
     -fx-background-color: #37373c;
     -fx-background-radius: 4;
-    -fx-pref-height: 50;
-    -fx-pref-width: 50;
+    -fx-pref-height: 30;
+    -fx-pref-width: 30;
 }
 
-.grid .button {
+.grid .button:hover {
     -fx-background-color: #2b2b30;
 }
 
@@ -60,15 +53,50 @@
 }
 
 .grid .button:danger {
-    -fx-background-color: #2b2b30;
+    -fx-background-color: #212125;
     -fx-text-fill: red;
 }
 
-.grid .button:hover {
+.popup {
     -fx-background-color: #2b2b30;
+    -fx-background-radius: 8;
+    -fx-border-color: -fu-my-red;
+    -fx-border-radius: 6;
+    -fx-border-width: 2;
 }
 
-.grid .button:disabled {
-    -fx-background-color: rgba(55, 55, 60, 0.6);
+.title {
+    -fx-font-size: 16;
+    -fx-text-fill: -fu-my-white;
 }
 
+.info {
+    -fx-font-size: 10;
+    -fx-text-fill: -fu-my-white;
+}
+
+.text-field {
+    -fx-background-color: #2b2b30;
+    -fx-background-radius: 7;
+    -fx-text-fill: -fu-my-white;
+    -fx-border-color: -fu-my-red;
+    -fx-border-radius: 6;
+    -fx-border-width: 2;
+}
+
+.text-field:hover {
+    -fx-background-color: #38383e;
+    -fx-text-fill: -fu-my-white;
+    -fx-border-color: -fu-my-red;
+    -fx-border-radius: 6;
+    -fx-border-width: 2;
+}
+
+.context-menu {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.menu-item {
+    -fx-background-color: transparent;
+}

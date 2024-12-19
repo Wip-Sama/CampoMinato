@@ -20,6 +20,15 @@ object CellFactory {
         return CellFactory
     }
 
+    fun setTypeFromLetter(letter: Char): CellFactory {
+        if (letter.isUpperCase()) {
+            setTypeBomb()
+        } else {
+            setTypeEmpty()
+        }
+        return CellFactory
+    }
+
     fun setStatusHidden(): CellFactory {
         new_cell[1] = CellStates.HIDDEN.ordinal
         return CellFactory
@@ -42,6 +51,17 @@ object CellFactory {
 
     fun setStatusExploded(): CellFactory {
         new_cell[1] = CellStates.EXPLODED.ordinal
+        return CellFactory
+    }
+
+    fun setStatusFromLetter(letter: Char): CellFactory {
+        when (letter.uppercase()) {
+            "D" -> setStatusDoubted()
+            "E" -> setStatusExploded()
+            "F" -> setStatusFlagged()
+            "H" -> setStatusHidden()
+            "R" -> setStatusRevealed()
+        }
         return CellFactory
     }
 

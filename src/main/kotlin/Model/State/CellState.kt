@@ -23,7 +23,6 @@ abstract class CellState() {
 
     open fun isExploded() : Boolean {
         return false
-        var ciao = CellFactory.build()
     }
 
     //Does nothing by default
