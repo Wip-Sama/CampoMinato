@@ -50,7 +50,12 @@ class GameBoard {
     }
 
     private fun setBombs(safeCell: Pair<Int, Int>) {
-        val randomList = (0..<(rows * columns)).shuffled().filter { it != safeCell.first * columns + safeCell.second }.take(bombs)
+        val safeRange = (safeCell.first - 1..safeCell.first + 1).flatMap { x ->
+            (safeCell.second - 1..safeCell.second + 1).map { y ->
+                x * columns + y
+            }
+        }
+        val randomList = (0 until (rows * columns)).shuffled().filter { it !in safeRange }.take(bombs)
         for (i in randomList) {
             val x = i / columns
             val y = i % columns

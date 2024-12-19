@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.*
 import javafx.stage.Stage
 import javafx.util.Duration
+import java.util.function.UnaryOperator
 
 class CampoMinatoController {
     private lateinit var stage: Stage
@@ -33,6 +34,8 @@ class CampoMinatoController {
 
     @FXML
     private lateinit var status_image: ImageView
+
+    private val contextMenu = createContextMenu()
 
     private fun updateAllButtons() {
         for (x in 0..<GameController.getGameBoard().value.rows) {
@@ -90,18 +93,35 @@ class CampoMinatoController {
         val columnsField = dialog.lookup("#columnsField") as TextField
         val bombsField = dialog.lookup("#bombsField") as TextField
 
-        listOf(rowsField, columnsField, bombsField).forEach { textField ->
+        listOf(rowsField, columnsField).forEach { textField ->
+            textField.focusedProperty().addListener { _, _, newValue ->
+                if (!newValue) {
+                    if (textField.text.isEmpty())
+                        textField.text = "5"
+                    else if (textField.text.toInt() < 5)
+                        textField.text = "5"
+                }
+            }
             textField.textProperty().addListener { _, oldValue, newValue ->
-                if (!newValue.matches("\\d*".toRegex())) {
+                if (!newValue.matches(Regex("\\d*"))) {
                     textField.text = oldValue
                 }
             }
         }
 
-        val stage = new_game.scene.window as Stage
-        val centerX = stage.x + stage.width / 2
-        val centerY = stage.y + stage.height / 2
-        val offsetX = centerX - stage.width / 4
+        bombsField.focusedProperty().addListener { _, _, newValue ->
+            if (!newValue) {
+                if (bombsField.text.isEmpty())
+                    bombsField.text = "1"
+                else if (bombsField.text.toInt() < 1)
+                    bombsField.text = "1"
+            }
+        }
+        bombsField.textProperty().addListener { _, oldValue, newValue ->
+            if (!newValue.matches(Regex("\\d*"))) {
+                bombsField.text = oldValue
+            }
+        }
 
         val contextMenu = ContextMenu()
         contextMenu.items.add(MenuItem().apply { graphic = dialog })
@@ -161,12 +181,14 @@ class CampoMinatoController {
                 val stage = new_game.scene.window as Stage
                 val centerX = stage.x + stage.width / 2 - 150 / 2
                 val centerY = stage.y + stage.height / 2 - 220 / 2
-                val contextMenu = createContextMenu()
                 contextMenu.show(new_game, centerX, centerY)
                 contextMenu.onHidden = EventHandler {
-                    val rows = (contextMenu.items[0] as MenuItem).graphic.lookup("#rowsField") as TextField
-                    val columns = (contextMenu.items[0] as MenuItem).graphic.lookup("#columnsField") as TextField
-                    val bombs = (contextMenu.items[0] as MenuItem).graphic.lookup("#bombsField") as TextField
+                    //make rowsField and columnsField have number >= than 5 and bombsField have number always bigge>= than 1
+
+                    val rows = (contextMenu.items[0].graphic.lookup("#rowsField") as TextField)
+                    val columns = (contextMenu.items[0].graphic.lookup("#columnsField") as TextField)
+                    val bombs = (contextMenu.items[0].graphic.lookup("#bombsField") as TextField)
+
                     if (rows.text.isNotEmpty() && columns.text.isNotEmpty() && bombs.text.isNotEmpty()) {
                         GameController.newGame(columns.text.toInt(), rows.text.toInt(), bombs.text.toInt())
                     }
