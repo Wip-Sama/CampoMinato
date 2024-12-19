@@ -1,5 +1,8 @@
 package CampoMinato.Model
 
+import CampoMinato.Model.GameBoard.GameBoard
+import CampoMinato.Model.GameBoard.GameBoardFactory
+import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.ReadOnlyProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.stage.FileChooser
@@ -24,7 +27,8 @@ object GameController {
     }
 
     fun newGame(rows: Int, columns: Int, bombs: Int, safeCell: Pair<Int, Int>) {
-        gameBoard.set(GameBoardFactory
+        gameBoard.set(
+            GameBoardFactory
             .setRows(rows)
             .setColumns(columns)
             .setBombs(bombs)
@@ -34,7 +38,8 @@ object GameController {
     }
 
     fun newGame(rows: Int, columns: Int, bombs: Int) {
-        gameBoard.set(GameBoardFactory
+        gameBoard.set(
+            GameBoardFactory
             .setRows(rows)
             .setColumns(columns)
             .setBombs(bombs)
@@ -49,7 +54,8 @@ object GameController {
         selectedFile?.let {
             val data = it.readLines()[0]
             data.split(",").let { (rows, columns, bombs, grid) ->
-                gameBoard.set(GameBoardFactory
+                gameBoard.set(
+                    GameBoardFactory
                     .setRows(rows.toInt())
                     .setColumns(columns.toInt())
                     .setBombs(bombs.toInt())

@@ -1,4 +1,4 @@
-package CampoMinato.Model.Enums
+package CampoMinato.Model.Cell.Enums
 
 enum class CellTypes {
     EMPTY,

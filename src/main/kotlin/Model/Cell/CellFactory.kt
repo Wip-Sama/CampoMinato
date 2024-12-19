@@ -1,14 +1,14 @@
-package CampoMinato.Model
+package CampoMinato.Model.Cell
 
 import CampoMinato.Model.Cell_Statuses.*
-import CampoMinato.Model.Enums.CellStates
-import CampoMinato.Model.Enums.CellTypes
+import CampoMinato.Model.Cell.Enums.CellStates
+import CampoMinato.Model.Cell.Enums.CellTypes
 import CampoMinato.Model.States.Cell_Types.BombCell
 import CampoMinato.Model.States.Cell_Types.EmptyCell
-import CampoMinato.Model.States.CellState
 
 object CellFactory {
     private var new_cell = Array(2) { CellTypes.EMPTY.ordinal; CellStates.HIDDEN.ordinal}
+    private var useProxy = true
 
     fun setTypeBomb(): CellFactory {
         new_cell[0] = CellTypes.BOMB.ordinal
@@ -65,6 +65,16 @@ object CellFactory {
         return CellFactory
     }
 
+    fun useProxy(): CellFactory {
+        useProxy = true
+        return CellFactory
+    }
+
+    fun avoidProxy(): CellFactory {
+        useProxy = false
+        return CellFactory
+    }
+
     fun build(): Cell {
         val state: CellState = when (new_cell[1]) {
             CellStates.HIDDEN.ordinal -> Hidden
@@ -85,6 +95,8 @@ object CellFactory {
 
         new_cell = Array(2) { CellTypes.EMPTY.ordinal; CellStates.HIDDEN.ordinal}
 
+        if (useProxy)
+            return CellProxy(cell)
         return cell
     }
 }

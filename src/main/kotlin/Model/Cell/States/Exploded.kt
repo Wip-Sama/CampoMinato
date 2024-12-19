@@ -1,27 +1,26 @@
 package CampoMinato.Model.Cell_Statuses
 
-import CampoMinato.Model.*
-import CampoMinato.Model.Enums.CellStates
-import CampoMinato.Model.States.CellState
+import CampoMinato.Model.Cell.Cell
+import CampoMinato.Model.Cell.Enums.CellStates
+import CampoMinato.Model.Cell.CellState
 
-object Flagged : CellState() {
-    override fun isFlagged() : Boolean {
+object Exploded : CellState {
+    override fun isExploded() : Boolean {
         return true
     }
 
     override fun toString(cell: Cell): String {
         if (cell.isBomb)
-            return "F"
-        return "f"
+            return "E"
+        return "e"
     }
-
 
     override fun leftClick(cell: Cell) {
         // Do nothing
     }
 
     override fun rightClick(cell: Cell) {
-        cell.stateProperty.set(Doubted)
+        // Do nothing
     }
 
     override fun doubleLeftClick(cell: Cell) {
@@ -29,10 +28,10 @@ object Flagged : CellState() {
     }
 
     override fun getStatusType(): CellStates {
-        return CellStates.FLAGGED
+        return CellStates.EXPLODED
     }
 
     override fun getDisplayValue(cell: Cell): String {
-        return "\uD83D\uDEA9" //🚩
+        return "\uD83D\uDCA3" //💣
     }
 }

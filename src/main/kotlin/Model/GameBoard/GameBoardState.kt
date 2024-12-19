@@ -1,22 +1,21 @@
-package CampoMinato.Model.States
+package CampoMinato.Model.GameBoard
 
-import CampoMinato.Model.Cell
-import CampoMinato.Model.GameBoard
+import CampoMinato.Model.Cell.Cell
 
-abstract class GameState {
-    open fun isOngoing() : Boolean {
+interface GameBoardState {
+    fun isOngoing() : Boolean {
         return false
     }
 
-    open fun isEnded() : Boolean {
+    fun isEnded() : Boolean {
         return false
     }
 
-    abstract fun won(gameBoard: GameBoard): Boolean
+    fun won(gameBoard: GameBoard): Boolean
 
-    abstract fun lose(gameBoard: GameBoard): Boolean
+    fun lose(gameBoard: GameBoard): Boolean
 
-    open fun countFlags(gameBoard : GameBoard) : Int {
+    fun countFlags(gameBoard : GameBoard) : Int {
         var flags = 0
         for (x in 0 until gameBoard.rows) {
             for (y in 0 until gameBoard.columns) {
@@ -28,7 +27,7 @@ abstract class GameState {
         return flags
     }
 
-    open fun searchBombs(gameBoard: GameBoard, x: Int, y: Int): Int {
+    fun searchBombs(gameBoard: GameBoard, x: Int, y: Int): Int {
         var bombs = 0
         for (i in -1..1) {
             for (j in -1..1) {
@@ -42,7 +41,7 @@ abstract class GameState {
         return bombs
     }
 
-    open fun getCellPosition(gameBoard: GameBoard, cell: Cell): Pair<Int, Int> {
+    fun getCellPosition(gameBoard: GameBoard, cell: Cell): Pair<Int, Int> {
         for (x in 0..<gameBoard.rows) {
             for (y in 0..<gameBoard.columns) {
                 if (gameBoard.cells[x][y] == cell) {
@@ -53,7 +52,7 @@ abstract class GameState {
         return Pair(-1, -1)
     }
 
-    open fun revealAllBombs(gameBoard: GameBoard) {
+    fun revealAllBombs(gameBoard: GameBoard) {
         for (x in 0 until gameBoard.rows) {
             for (y in 0 until gameBoard.columns) {
                 if (gameBoard.cells[x][y].isBomb) {
@@ -63,11 +62,11 @@ abstract class GameState {
         }
     }
 
-    abstract fun revealAllCells(gameBoard: GameBoard)
+    fun revealAllCells(gameBoard: GameBoard)
 
-    abstract fun hideAllCells(gameBoard: GameBoard)
+    fun hideAllCells(gameBoard: GameBoard)
 
-    abstract fun revealEmptyCells(gameBoard: GameBoard, cell: Cell)
+    fun revealEmptyCells(gameBoard: GameBoard, cell: Cell)
 
-    abstract fun revealNeighbors(gameBoard: GameBoard, x: Int, y: Int)
+    fun revealNeighbors(gameBoard: GameBoard, x: Int, y: Int)
 }

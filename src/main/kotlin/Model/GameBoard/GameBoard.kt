@@ -1,13 +1,14 @@
-package CampoMinato.Model
+package CampoMinato.Model.GameBoard
 
-import CampoMinato.Model.State.Game_states.Ongoing
-import CampoMinato.Model.States.GameState
+import CampoMinato.Model.Cell.Cell
+import CampoMinato.Model.Cell.CellFactory
+import CampoMinato.Model.GameBoard.Game_states.Ongoing
 import javafx.beans.property.SimpleObjectProperty
 import kotlin.properties.Delegates
 
 //Prototype
 class GameBoard {
-    internal val gameStateProperty = SimpleObjectProperty<GameState>(Ongoing)
+    internal val gameStateProperty = SimpleObjectProperty<GameBoardState>(Ongoing)
     var cells : Array<Array<Cell>>
         private set
     var rows by Delegates.notNull<Int>()

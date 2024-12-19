@@ -1,11 +1,11 @@
-package CampoMinato.Model.State.Game_states
+package CampoMinato.Model.GameBoard.Game_states
 
-import CampoMinato.Model.Cell
+import CampoMinato.Model.Cell.Cell
 import CampoMinato.Model.Cell_Statuses.Revealed
-import CampoMinato.Model.GameBoard
-import CampoMinato.Model.States.GameState
+import CampoMinato.Model.GameBoard.GameBoard
+import CampoMinato.Model.GameBoard.GameBoardState
 
-object Ended : GameState() {
+object Ended : GameBoardState {
     override fun isEnded() : Boolean {
         return true
     }

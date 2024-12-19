@@ -1,10 +1,10 @@
 package CampoMinato.Model.Cell_Statuses
 
-import CampoMinato.Model.*
-import CampoMinato.Model.Enums.CellStates
-import CampoMinato.Model.States.CellState
+import CampoMinato.Model.Cell.Cell
+import CampoMinato.Model.Cell.Enums.CellStates
+import CampoMinato.Model.Cell.CellState
 
-object Doubted : CellState() {
+object Doubted : CellState {
     override fun isDoubted() : Boolean {
         return true
     }

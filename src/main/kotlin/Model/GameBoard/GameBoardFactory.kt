@@ -1,4 +1,4 @@
-package CampoMinato.Model
+package CampoMinato.Model.GameBoard
 
 object GameBoardFactory {
     private var rows = 10
@@ -8,27 +8,27 @@ object GameBoardFactory {
     private var grid = ""
 
     fun setRows(rows: Int) : GameBoardFactory {
-        this.rows = rows
+        GameBoardFactory.rows = rows
         return this
     }
 
     fun setColumns(columns: Int) : GameBoardFactory {
-        this.columns = columns
+        GameBoardFactory.columns = columns
         return this
     }
 
     fun setBombs(bombs: Int) : GameBoardFactory {
-        this.bombs = bombs
+        GameBoardFactory.bombs = bombs
         return this
     }
 
     fun setSafeCell(safeCell: Pair<Int, Int>) : GameBoardFactory {
-        this.safeCell = safeCell
+        GameBoardFactory.safeCell = safeCell
         return this
     }
 
     fun setGrid(grid: String) : GameBoardFactory {
-        this.grid = grid
+        GameBoardFactory.grid = grid
         return this
     }
 

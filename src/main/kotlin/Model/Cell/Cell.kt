@@ -1,8 +1,7 @@
-package CampoMinato.Model
+package CampoMinato.Model.Cell
 
 import CampoMinato.Model.Cell_Statuses.Hidden
-import CampoMinato.Model.Enums.CellStates
-import CampoMinato.Model.States.CellState
+import CampoMinato.Model.Cell.Enums.CellStates
 import javafx.beans.property.SimpleObjectProperty
 
 abstract class Cell {
@@ -23,7 +22,7 @@ abstract class Cell {
         return stateProperty.get().isHidden()
     }
 
-    open fun isDobted() : Boolean {
+    open fun isDoubted() : Boolean {
         return stateProperty.get().isDoubted()
     }
 
@@ -43,15 +42,15 @@ abstract class Cell {
         return stateProperty.get().getStatusType()
     }
 
-    fun leftClick() {
+    open fun leftClick() {
         stateProperty.get().leftClick(this)
     }
 
-    fun rightClick() {
+    open fun rightClick() {
         stateProperty.get().rightClick(this)
     }
 
-    fun doubleLeftClick() {
+    open fun doubleLeftClick() {
         stateProperty.get().doubleLeftClick(this)
     }
 

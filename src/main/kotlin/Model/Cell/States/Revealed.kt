@@ -1,10 +1,11 @@
 package CampoMinato.Model.Cell_Statuses
 
 import CampoMinato.Model.*
-import CampoMinato.Model.Enums.CellStates
-import CampoMinato.Model.States.CellState
+import CampoMinato.Model.Cell.Cell
+import CampoMinato.Model.Cell.Enums.CellStates
+import CampoMinato.Model.Cell.CellState
 
-object Revealed : CellState() {
+object Revealed : CellState {
     override fun isRevealed() : Boolean {
         return true
     }
