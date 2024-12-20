@@ -1,4 +1,4 @@
-package CampoMinato.Model.Cell_Statuses
+package CampoMinato.Model.Cell.States
 
 import CampoMinato.Model.Cell.Cell
 import CampoMinato.Model.Cell.Enums.CellStates
@@ -10,7 +10,7 @@ object Flagged : CellState {
     }
 
     override fun toString(cell: Cell): String {
-        if (cell.isBomb)
+        if (cell.isBomb())
             return "F"
         return "f"
     }
@@ -21,7 +21,7 @@ object Flagged : CellState {
     }
 
     override fun rightClick(cell: Cell) {
-        cell.stateProperty.set(Doubted)
+        cell.getStateProperty().set(Doubted)
     }
 
     override fun doubleLeftClick(cell: Cell) {

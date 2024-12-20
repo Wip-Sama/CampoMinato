@@ -12,7 +12,6 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.*
 import javafx.stage.Stage
 import javafx.util.Duration
-import java.util.function.UnaryOperator
 
 class CampoMinatoController {
     private lateinit var stage: Stage
@@ -37,54 +36,6 @@ class CampoMinatoController {
 
     private val contextMenu = createContextMenu()
 
-    private fun updateAllButtons() {
-        for (x in 0..<GameController.getGameBoard().value.rows) {
-            for (y in 0..<GameController.getGameBoard().value.columns) {
-                val button = game_grid.children
-                    .filterIsInstance<Button>()
-                    .first { GridPane.getRowIndex(it) == y && GridPane.getColumnIndex(it) == x }
-
-                val cell = GameController.getGameBoard().value.cells[x][y]
-                val bombs = GameController.getGameBoard().value.searchBombs(x, y)
-
-                button.text = cell.getDisplayValue()
-                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..4 && cell.isRevealed())
-                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 6 && cell.isRevealed())
-                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
-
-                cell.stateProperty.addListener { _, _, _ ->
-                    button.text = cell.getDisplayValue()
-                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..4 && cell.isRevealed())
-                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 6 && cell.isRevealed())
-                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
-                }
-            }
-        }
-        updateStatus()
-        resizeWindow()
-    }
-
-    private fun resizeWindow() {
-        if (::game_grid.isInitialized) {
-            val scene = game_grid.scene
-            if (scene is Scene)
-                scene.window.sizeToScene()
-        }
-    }
-
-    private fun updateStatus() {
-        val flags = GameController.getGameBoard().value.countFlags()
-        score_label.text = "Score: ${flags}/${GameController.getGameBoard().value.bombs}"
-//        time_label.text = "Time: ${GameBoard.time}"
-        status_image.image = when {
-            GameController.getGameBoard().value.lose() -> ImageView("/images/lose.png").image
-            GameController.getGameBoard().value.won() -> ImageView("/images/win.png").image
-            flags>GameController.getGameBoard().value.bombs -> ImageView("/images/too_many.png").image
-            flags==GameController.getGameBoard().value.bombs -> ImageView("/images/near_win.png").image
-            else -> ImageView("/images/nothing.png").image
-        }
-    }
-
     private fun createContextMenu(): ContextMenu {
         val loader = FXMLLoader(javaClass.getResource("/new_minefield.fxml"))
         val dialog = loader.load<BorderPane>()
@@ -100,6 +51,8 @@ class CampoMinatoController {
                         textField.text = "5"
                     else if (textField.text.toInt() < 5)
                         textField.text = "5"
+                    else if (textField.text.toInt() > 22)
+                        textField.text = "22"
                 }
             }
             textField.textProperty().addListener { _, oldValue, newValue ->
@@ -115,6 +68,8 @@ class CampoMinatoController {
                     bombsField.text = "1"
                 else if (bombsField.text.toInt() < 1)
                     bombsField.text = "1"
+                else if (bombsField.text.toInt() > (rowsField.text.toInt() * columnsField.text.toInt()) - 9)
+                    bombsField.text = ((rowsField.text.toInt() * columnsField.text.toInt()) - 9).toString()
             }
         }
         bombsField.textProperty().addListener { _, oldValue, newValue ->
@@ -128,11 +83,54 @@ class CampoMinatoController {
         return contextMenu
     }
 
+    private fun updateAllButtons() {
+        for (x in 0..<GameController.getGameBoard().value.rows) {
+            for (y in 0..<GameController.getGameBoard().value.columns) {
+                val button = game_grid.children
+                    .filterIsInstance<Button>()
+                    .first { GridPane.getRowIndex(it) == y && GridPane.getColumnIndex(it) == x }
+
+                val cell = GameController.getGameBoard().value.cells[x][y]
+                val bombs = GameController.getGameBoard().value.searchBombs(x, y)
+
+                button.text = cell.getDisplayValue()
+                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..4 && cell.isRevealed())
+                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 6 && cell.isRevealed())
+                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
+
+                cell.getStateProperty().addListener { _, _, _ ->
+                    button.text = cell.getDisplayValue()
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..4 && cell.isRevealed())
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 5 && cell.isRevealed())
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
+                }
+            }
+        }
+    }
+
+    private fun resizeWindow() {
+        if (::game_grid.isInitialized) {
+            val scene = game_grid.scene
+            if (scene is Scene)
+                scene.window.sizeToScene()
+        }
+    }
+
+    private fun updateStatus() {
+        val flags = GameController.getGameBoard().value.countFlags()
+        score_label.text = "Score: ${flags}/${GameController.getGameBoard().value.bombs}"
+        status_image.image = when {
+            GameController.getGameBoard().value.lose() -> ImageView("/images/lose.png").image
+            GameController.getGameBoard().value.won() -> ImageView("/images/win.png").image
+            flags>GameController.getGameBoard().value.bombs -> ImageView("/images/too_many.png").image
+            flags==GameController.getGameBoard().value.bombs -> ImageView("/images/near_win.png").image
+            else -> ImageView("/images/nothing.png").image
+        }
+    }
+
     private fun generateButtonsGrid(rows: Int, columns: Int): GridPane {
         game_grid.children.clear()
-        game_grid.columnConstraints.clear()
         game_grid.columnConstraints.setAll((0 until rows).map { ColumnConstraints(30.0) })
-        game_grid.rowConstraints.clear()
         game_grid.rowConstraints.setAll((0 until columns).map { RowConstraints(30.0) })
         //adjust the number of rows and columns
         for (x in 0 until rows) {
@@ -173,6 +171,8 @@ class CampoMinatoController {
     fun initialize() {
         GameController.getGameBoard().addListener { _, _, _ ->
             generateButtonsGrid(GameController.getGameBoard().value.rows, GameController.getGameBoard().value.columns)
+            updateStatus()
+            resizeWindow()
             updateAllButtons()
         }
 
@@ -183,8 +183,6 @@ class CampoMinatoController {
                 val centerY = stage.y + stage.height / 2 - 220 / 2
                 contextMenu.show(new_game, centerX, centerY)
                 contextMenu.onHidden = EventHandler {
-                    //make rowsField and columnsField have number >= than 5 and bombsField have number always bigge>= than 1
-
                     val rows = (contextMenu.items[0].graphic.lookup("#rowsField") as TextField)
                     val columns = (contextMenu.items[0].graphic.lookup("#columnsField") as TextField)
                     val bombs = (contextMenu.items[0].graphic.lookup("#bombsField") as TextField)

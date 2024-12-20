@@ -1,7 +1,7 @@
-package CampoMinato.Model.GameBoard.Game_states
+package CampoMinato.Model.GameBoard.States
 
 import CampoMinato.Model.Cell.Cell
-import CampoMinato.Model.Cell_Statuses.Hidden
+import CampoMinato.Model.Cell.States.Hidden
 import CampoMinato.Model.GameBoard.GameBoard
 import CampoMinato.Model.GameBoard.GameBoardState
 
@@ -11,11 +11,11 @@ object Ongoing : GameBoardState {
     }
 
     override fun won(gameBoard: GameBoard): Boolean {
-        for (x in 0 until gameBoard.rows) {
-            for (y in 0 until gameBoard.columns) {
-                if (gameBoard.cells[x][y].isHidden() && !gameBoard.cells[x][y].isBomb) {
-                    return false
-                }
+        val iterator = gameBoard.gameBoardIterator()
+        while (iterator.hasNext()) {
+            val cell = iterator.next()
+            if (cell.isHidden() && !cell.isBomb()) {
+                return false
             }
         }
         gameBoard.gameStateProperty.set(Ended)
@@ -23,12 +23,12 @@ object Ongoing : GameBoardState {
     }
 
     override fun lose(gameBoard: GameBoard): Boolean {
-        for (x in 0 until gameBoard.rows) {
-            for (y in 0 until gameBoard.columns) {
-                if (gameBoard.cells[x][y].isExploded()) {
-                    gameBoard.gameStateProperty.set(Ended)
-                    return true
-                }
+        val iterator = gameBoard.gameBoardIterator()
+        while (iterator.hasNext()) {
+            val cell = iterator.next()
+            if (cell.isExploded()) {
+                gameBoard.gameStateProperty.set(Ended)
+                return true
             }
         }
         return false
@@ -39,13 +39,11 @@ object Ongoing : GameBoardState {
     }
 
     override fun revealNeighbors(gameBoard: GameBoard, x: Int, y: Int) {
-        for (i in -1..1) {
-            for (j in -1..1) {
-                if (x + i in 0 until gameBoard.rows && y + j in 0 until gameBoard.columns) {
-                    if (gameBoard.cells[x + i][y + j].isHidden()) {
-                        gameBoard.cells[x + i][y + j].leftClick()
-                    }
-                }
+        val iterator = gameBoard.rangedGameBoardIterator(x, y, 1)
+        while (iterator.hasNext()) {
+            val cell = iterator.next()
+            if (cell.isHidden()) {
+                cell.leftClick()
             }
         }
     }
@@ -53,13 +51,11 @@ object Ongoing : GameBoardState {
     override fun revealEmptyCells(gameBoard: GameBoard, cell: Cell) {
         val (x, y) = gameBoard.getCellPosition(cell)
         if (gameBoard.searchBombs(x, y) == 0) {
-            for (i in -1..1) {
-                for (j in -1..1) {
-                    if (x + i in 0 until gameBoard.rows && y + j in 0 until gameBoard.columns) {
-                        if (gameBoard.cells[x + i][y + j].isHidden()) {
-                            gameBoard.cells[x + i][y + j].leftClick()
-                        }
-                    }
+            val iterator = gameBoard.rangedGameBoardIterator(x, y, 1)
+            while (iterator.hasNext()) {
+                val c = iterator.next()
+                if (c.isHidden()) {
+                    c.leftClick()
                 }
             }
         }
@@ -68,7 +64,7 @@ object Ongoing : GameBoardState {
     override fun hideAllCells(gameBoard: GameBoard) {
         for (x in 0 until gameBoard.rows) {
             for (y in 0 until gameBoard.columns) {
-                gameBoard.cells[x][y].stateProperty.set(Hidden)
+                gameBoard.cells[x][y].getStateProperty().set(Hidden)
             }
         }
     }

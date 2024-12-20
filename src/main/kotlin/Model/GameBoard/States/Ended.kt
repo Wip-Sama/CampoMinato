@@ -1,42 +1,42 @@
-package CampoMinato.Model.GameBoard.Game_states
+package CampoMinato.Model.GameBoard.States
 
 import CampoMinato.Model.Cell.Cell
-import CampoMinato.Model.Cell_Statuses.Revealed
+import CampoMinato.Model.Cell.States.Revealed
 import CampoMinato.Model.GameBoard.GameBoard
 import CampoMinato.Model.GameBoard.GameBoardState
 
 object Ended : GameBoardState {
-    override fun isEnded() : Boolean {
+    override fun isEnded(): Boolean {
         return true
     }
 
     override fun won(gameBoard: GameBoard): Boolean {
-        for (x in 0 until gameBoard.rows) {
-            for (y in 0 until gameBoard.columns) {
-                if (gameBoard.cells[x][y].isHidden() && !gameBoard.cells[x][y].isBomb) {
-                    return false
-                }
+        val iterator = gameBoard.gameBoardIterator()
+        while (iterator.hasNext()) {
+            val cell = iterator.next()
+            if (cell.isHidden() && !cell.isBomb()) {
+                return false
             }
         }
         return true
     }
 
     override fun lose(gameBoard: GameBoard): Boolean {
-        for (x in 0 until gameBoard.rows) {
-            for (y in 0 until gameBoard.columns) {
-                if (gameBoard.cells[x][y].isExploded()) {
-                    return true
-                }
+        val iterator = gameBoard.gameBoardIterator()
+        while (iterator.hasNext()) {
+            val cell = iterator.next()
+            if (cell.isExploded()) {
+                return true
             }
         }
         return false
     }
 
     override fun revealAllCells(gameBoard: GameBoard) {
-        for (x in 0 until gameBoard.rows) {
-            for (y in 0 until gameBoard.columns) {
-                gameBoard.cells[x][y].stateProperty.set(Revealed)
-            }
+        val iterator = gameBoard.gameBoardIterator()
+        while (iterator.hasNext()) {
+            val cell = iterator.next()
+            cell.getStateProperty().set(Revealed)
         }
     }
 

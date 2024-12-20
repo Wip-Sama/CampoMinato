@@ -1,4 +1,4 @@
-package CampoMinato.Model.Cell_Statuses
+package CampoMinato.Model.Cell.States
 
 import CampoMinato.Model.Cell.Cell
 import CampoMinato.Model.Cell.Enums.CellStates
@@ -10,7 +10,7 @@ object Exploded : CellState {
     }
 
     override fun toString(cell: Cell): String {
-        if (cell.isBomb)
+        if (cell.isBomb())
             return "E"
         return "e"
     }

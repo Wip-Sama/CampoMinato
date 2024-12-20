@@ -1,4 +1,4 @@
-package CampoMinato.Model.Cell_Statuses
+package CampoMinato.Model.Cell.States
 
 import CampoMinato.Model.*
 import CampoMinato.Model.Cell.Cell
@@ -11,7 +11,7 @@ object Revealed : CellState {
     }
 
     override fun toString(cell: Cell): String {
-        if (cell.isBomb)
+        if (cell.isBomb())
             return "R"
         return "r"
     }

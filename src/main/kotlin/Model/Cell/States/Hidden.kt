@@ -1,4 +1,4 @@
-package CampoMinato.Model.Cell_Statuses
+package CampoMinato.Model.Cell.States
 
 import CampoMinato.Model.*
 import CampoMinato.Model.Cell.Cell
@@ -11,22 +11,22 @@ object Hidden : CellState {
     }
 
     override fun toString(cell: Cell): String {
-        if (cell.isBomb)
+        if (cell.isBomb())
             return "H"
         return "h"
     }
 
     override fun leftClick(cell: Cell) {
-        if (cell.isBomb) {
-            cell.stateProperty.set(Exploded)
+        if (cell.isBomb()) {
+            cell.getStateProperty().set(Exploded)
         } else {
-            cell.stateProperty.set(Revealed)
+            cell.getStateProperty().set(Revealed)
             GameController.getGameBoard().value.revealEmptyCells(cell)
         }
     }
 
     override fun rightClick(cell: Cell) {
-        cell.stateProperty.set(Flagged)
+        cell.getStateProperty().set(Flagged)
     }
 
     override fun doubleLeftClick(cell: Cell) {

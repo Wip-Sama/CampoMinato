@@ -2,7 +2,6 @@ package CampoMinato.Model
 
 import CampoMinato.Model.GameBoard.GameBoard
 import CampoMinato.Model.GameBoard.GameBoardFactory
-import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.ReadOnlyProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.stage.FileChooser
@@ -18,7 +17,7 @@ object GameController {
             .build()
     )
 
-    fun getGameBoard() : ReadOnlyProperty<GameBoard> {
+    fun getGameBoard(): ReadOnlyProperty<GameBoard> {
         return gameBoard
     }
 
@@ -29,21 +28,21 @@ object GameController {
     fun newGame(rows: Int, columns: Int, bombs: Int, safeCell: Pair<Int, Int>) {
         gameBoard.set(
             GameBoardFactory
-            .setRows(rows)
-            .setColumns(columns)
-            .setBombs(bombs)
-            .setSafeCell(safeCell)
-            .build()
+                .setRows(rows)
+                .setColumns(columns)
+                .setBombs(bombs)
+                .setSafeCell(safeCell)
+                .build()
         )
     }
 
     fun newGame(rows: Int, columns: Int, bombs: Int) {
         gameBoard.set(
             GameBoardFactory
-            .setRows(rows)
-            .setColumns(columns)
-            .setBombs(bombs)
-            .build()
+                .setRows(rows)
+                .setColumns(columns)
+                .setBombs(bombs)
+                .build()
         )
     }
 
@@ -56,11 +55,11 @@ object GameController {
             data.split(",").let { (rows, columns, bombs, grid) ->
                 gameBoard.set(
                     GameBoardFactory
-                    .setRows(rows.toInt())
-                    .setColumns(columns.toInt())
-                    .setBombs(bombs.toInt())
-                    .setGrid(grid)
-                    .build()
+                        .setRows(rows.toInt())
+                        .setColumns(columns.toInt())
+                        .setBombs(bombs.toInt())
+                        .setGrid(grid)
+                        .build()
                 )
             }
         }

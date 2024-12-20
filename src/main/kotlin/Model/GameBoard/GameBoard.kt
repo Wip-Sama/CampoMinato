@@ -2,14 +2,14 @@ package CampoMinato.Model.GameBoard
 
 import CampoMinato.Model.Cell.Cell
 import CampoMinato.Model.Cell.CellFactory
-import CampoMinato.Model.GameBoard.Game_states.Ongoing
+import CampoMinato.Model.GameBoard.States.Ongoing
 import javafx.beans.property.SimpleObjectProperty
 import kotlin.properties.Delegates
 
 //Prototype
 class GameBoard {
     internal val gameStateProperty = SimpleObjectProperty<GameBoardState>(Ongoing)
-    var cells : Array<Array<Cell>>
+    var cells: Array<Array<Cell>>
         private set
     var rows by Delegates.notNull<Int>()
         private set
@@ -38,6 +38,7 @@ class GameBoard {
                 CellFactory.build()
             }
         }
+        println()
     }
 
     private fun setBombs() {
@@ -63,11 +64,19 @@ class GameBoard {
         }
     }
 
-    fun isOngoing() : Boolean {
+    fun gameBoardIterator(): GameBoardIterator {
+        return GameBoardIterator(cells)
+    }
+
+    fun rangedGameBoardIterator(x: Int, y: Int, range: Int): RangedGameBoardIterator {
+        return RangedGameBoardIterator(cells, Pair(x, y), range)
+    }
+
+    fun isOngoing(): Boolean {
         return gameStateProperty.get().isOngoing()
     }
 
-    fun isEnded() : Boolean {
+    fun isEnded(): Boolean {
         return gameStateProperty.get().isEnded()
     }
 
@@ -79,12 +88,12 @@ class GameBoard {
         return gameStateProperty.get().lose(this)
     }
 
-    fun countFlags() : Int {
+    fun countFlags(): Int {
         return gameStateProperty.get().countFlags(this)
     }
 
     fun searchBombs(x: Int, y: Int): Int {
-        return gameStateProperty.get().searchBombs(this, x, y)
+        return gameStateProperty.get().countNearbyBombs(this, x, y)
     }
 
     fun revealNeighbors(x: Int, y: Int) {
@@ -111,15 +120,15 @@ class GameBoard {
         gameStateProperty.get().hideAllCells(this)
     }
 
-    private fun gridToString() : String {
+    private fun gridToString(): String {
         return cells.joinToString("") { it.joinToString("") { cell -> cell.toString() } }
     }
 
-    override fun toString() : String {
+    override fun toString(): String {
         return "${rows},${columns},${bombs},${gridToString()}"
     }
 
-    fun clone() : GameBoard {
+    fun clone(): GameBoard {
         val newBoard = GameBoard(rows, columns, bombs, toString())
         newBoard.gameStateProperty.set(gameStateProperty.get())
         return newBoard
