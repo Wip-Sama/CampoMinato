@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="150.0" styleClass="popup" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="150.0" styleClass="popup" stylesheets="@style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <VBox alignment="CENTER" spacing="5.0" BorderPane.alignment="CENTER">
-         <Label styleClass="title" text="new minefield"/>
-         <Label styleClass="info" text="Rows"/>
-         <TextField fx:id="rowsField" text="10"/>
-         <Label styleClass="info" text="Columns"/>
-         <TextField fx:id="columnsField" text="10"/>
-         <Label styleClass="info" text="Bombs"/>
-         <TextField fx:id="bombsField" text="10"/>
-         <Button fx:id="generateButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Go!"/>
+         <Label styleClass="title" text="new minefield" />
+         <Label styleClass="info" text="Rows" />
+         <TextField fx:id="rowsField" text="10" />
+         <Label styleClass="info" text="Columns" />
+         <TextField fx:id="columnsField" text="10" />
+         <Label styleClass="info" text="Bombs" />
+         <TextField fx:id="bombsField" text="10" />
+         <Button fx:id="generateButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Go!" />
       </VBox>
    </center>
    <padding>

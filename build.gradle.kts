@@ -19,8 +19,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    testImplementation( "org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly( "org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
     implementation("org.openjfx:javafx-controls:22")
     implementation("org.openjfx:javafx-fxml:22")

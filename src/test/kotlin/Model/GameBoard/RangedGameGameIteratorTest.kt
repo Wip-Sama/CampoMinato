@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import kotlin.properties.Delegates
 
-class RangedGameBoardIteratorTest {
+class RangedGameGameIteratorTest {
 	private lateinit var cells: Array<Array<Cell>>
 	private lateinit var origin: Pair<Int, Int>
 	private var range by Delegates.notNull<Int>()

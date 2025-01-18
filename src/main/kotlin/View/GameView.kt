@@ -1,6 +1,7 @@
 package CampoMinato.View
 
 import CampoMinato.Model.GameController
+import CampoMinato.Model.Scoreboard.SessionHistory
 import javafx.animation.PauseTransition
 import javafx.css.PseudoClass
 import javafx.event.EventHandler
@@ -9,15 +10,22 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.image.ImageView
-import javafx.scene.layout.*
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.ColumnConstraints
+import javafx.scene.layout.GridPane
+import javafx.scene.layout.RowConstraints
 import javafx.stage.Stage
 import javafx.util.Duration
+
 
 class CampoMinatoController {
     private lateinit var stage: Stage
 
     @FXML
     private lateinit var game_grid: GridPane
+
+    @FXML
+    private lateinit var session_history: Button
 
     @FXML
     private lateinit var new_game: Button
@@ -34,9 +42,10 @@ class CampoMinatoController {
     @FXML
     private lateinit var status_image: ImageView
 
-    private val contextMenu = createContextMenu()
+    private val newGameMenu = createNewGameMenu()
+    private val gameHistoryMenu = createNewGameHistoryMenu()
 
-    private fun createContextMenu(): ContextMenu {
+    private fun createNewGameMenu(): ContextMenu {
         val loader = FXMLLoader(javaClass.getResource("/new_minefield.fxml"))
         val dialog = loader.load<BorderPane>()
 
@@ -83,6 +92,15 @@ class CampoMinatoController {
         return contextMenu
     }
 
+    private fun createNewGameHistoryMenu(): ContextMenu {
+        val loader = FXMLLoader(javaClass.getResource("/gamehistory.fxml"))
+        val dialog = loader.load<BorderPane>()
+
+        val contextMenu = ContextMenu()
+        contextMenu.items.add(MenuItem().apply { graphic = dialog })
+        return contextMenu
+    }
+
     private fun updateAllButtons() {
         for (x in 0..<GameController.getGameBoard().value.rows) {
             for (y in 0..<GameController.getGameBoard().value.columns) {
@@ -95,13 +113,13 @@ class CampoMinatoController {
 
                 button.text = cell.getDisplayValue()
                 button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..4 && cell.isRevealed())
-                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 6 && cell.isRevealed())
+                button.pseudoClassStateChanged(PseudoClass.getPseudoClass("very_warning"), bombs >= 6 && cell.isRevealed())
                 button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
 
                 cell.getStateProperty().addListener { _, _, _ ->
                     button.text = cell.getDisplayValue()
                     button.pseudoClassStateChanged(PseudoClass.getPseudoClass("warning"), bombs in 3..4 && cell.isRevealed())
-                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("danger"), bombs >= 5 && cell.isRevealed())
+                    button.pseudoClassStateChanged(PseudoClass.getPseudoClass("very_warning"), bombs >= 5 && cell.isRevealed())
                     button.pseudoClassStateChanged(PseudoClass.getPseudoClass("disabled"), cell.isRevealed())
                 }
             }
@@ -120,8 +138,14 @@ class CampoMinatoController {
         val flags = GameController.getGameBoard().value.countFlags()
         score_label.text = "Score: ${flags}/${GameController.getGameBoard().value.bombs}"
         status_image.image = when {
-            GameController.getGameBoard().value.lose() -> ImageView("/images/lose.png").image
-            GameController.getGameBoard().value.won() -> ImageView("/images/win.png").image
+            GameController.getGameBoard().value.lose() -> {
+                GameController.getGameBoard().value.updateSessionHistory()
+                ImageView("/images/lose.png").image
+            }
+            GameController.getGameBoard().value.won() -> {
+                GameController.getGameBoard().value.updateSessionHistory()
+                ImageView("/images/win.png").image
+            }
             flags>GameController.getGameBoard().value.bombs -> ImageView("/images/too_many.png").image
             flags==GameController.getGameBoard().value.bombs -> ImageView("/images/near_win.png").image
             else -> ImageView("/images/nothing.png").image
@@ -176,16 +200,30 @@ class CampoMinatoController {
             updateAllButtons()
         }
 
+        session_history.onMouseClicked = EventHandler {
+            val stage = session_history.scene.window as Stage
+            val centerX = stage.x + stage.width / 2 - 200 / 2
+            val centerY = stage.y + stage.height / 2 - 350 / 2
+            gameHistoryMenu.show(session_history, centerX, centerY)
+            val displayPane = gameHistoryMenu.items[0].graphic.lookup("#displayPane") as ScrollPane
+            val displayNode = displayPane.content as Label
+            if (SessionHistory.children.isEmpty()) {
+                displayNode.text = "No games played yet"
+            } else {
+                displayNode.text = SessionHistory.getSessionBoard()
+            }
+        }
+
         new_game.onMouseClicked = EventHandler {
             if (it.button.name == "SECONDARY") {
                 val stage = new_game.scene.window as Stage
                 val centerX = stage.x + stage.width / 2 - 150 / 2
                 val centerY = stage.y + stage.height / 2 - 220 / 2
-                contextMenu.show(new_game, centerX, centerY)
-                contextMenu.onHidden = EventHandler {
-                    val rows = (contextMenu.items[0].graphic.lookup("#rowsField") as TextField)
-                    val columns = (contextMenu.items[0].graphic.lookup("#columnsField") as TextField)
-                    val bombs = (contextMenu.items[0].graphic.lookup("#bombsField") as TextField)
+                newGameMenu.show(new_game, centerX, centerY)
+                newGameMenu.onHidden = EventHandler {
+                    val rows = (newGameMenu.items[0].graphic.lookup("#rowsField") as TextField)
+                    val columns = (newGameMenu.items[0].graphic.lookup("#columnsField") as TextField)
+                    val bombs = (newGameMenu.items[0].graphic.lookup("#bombsField") as TextField)
 
                     if (rows.text.isNotEmpty() && columns.text.isNotEmpty() && bombs.text.isNotEmpty()) {
                         GameController.newGame(columns.text.toInt(), rows.text.toInt(), bombs.text.toInt())

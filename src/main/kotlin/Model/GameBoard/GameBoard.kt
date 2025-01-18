@@ -3,12 +3,18 @@ package CampoMinato.Model.GameBoard
 import CampoMinato.Model.Cell.Cell
 import CampoMinato.Model.Cell.CellFactory
 import CampoMinato.Model.GameBoard.States.Ongoing
+import CampoMinato.Model.Scoreboard.SessionHistory
+import CampoMinato.Model.Scoreboard.Size
+import CampoMinato.Model.SessionHistory.Container
+import CampoMinato.Model.SessionHistory.Difficulty
+import CampoMinato.Model.SessionHistory.Game
 import javafx.beans.property.SimpleObjectProperty
 import kotlin.properties.Delegates
 
 //Prototype
 class GameBoard {
     internal val gameStateProperty = SimpleObjectProperty<GameBoardState>(Ongoing)
+    private var gameRegistred = false
     var cells: Array<Array<Cell>>
         private set
     var rows by Delegates.notNull<Int>()
@@ -132,5 +138,33 @@ class GameBoard {
         val newBoard = GameBoard(rows, columns, bombs, toString())
         newBoard.gameStateProperty.set(gameStateProperty.get())
         return newBoard
+    }
+
+    fun updateSessionHistory() {
+        if (gameRegistred) return
+        var size: Size? = null
+        var diff: Difficulty? = null
+        for (sizes in SessionHistory.children) {
+            if (sizes is Container && sizes.getSessionBoard().startsWith("size: $columns"+"x$rows")) {
+                size = sizes as Size
+                for (dif in sizes.children) {
+                    if (dif is Container && dif.getSessionBoard().startsWith("diff: $bombs")) {
+                        diff = dif as Difficulty
+                        break
+                    }
+                }
+                break
+            }
+        }
+        if (size == null) {
+            size = Size(columns.toString() + "x" + rows.toString())
+            SessionHistory.add(size)
+        }
+        if (diff == null) {
+            diff = Difficulty(bombs, size)
+            size.add(diff)
+        }
+        diff.add(Game(if (won()) "won" else "lost"))
+        gameRegistred = true
     }
 }

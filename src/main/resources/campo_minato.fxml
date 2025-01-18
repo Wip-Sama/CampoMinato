@@ -19,19 +19,19 @@
          </BorderPane.margin>
          <bottom>
              <HBox alignment="CENTER" fillHeight="false" prefHeight="60.0" spacing="10.0" BorderPane.alignment="CENTER">
-                 <Button fx:id="save_game" focusTraversable="false" mnemonicParsing="false" text="Save"/>
-                 <Separator orientation="VERTICAL"/>
-                 <Button fx:id="load_game" focusTraversable="false" mnemonicParsing="false" text="Load"/>
-                 <Separator orientation="VERTICAL"/>
-                 <Button fx:id="new_game" focusTraversable="false" mnemonicParsing="false" text="New game"/>
+                 <Button fx:id="save_game" focusTraversable="false" mnemonicParsing="false" text="Save" />
+                 <Separator orientation="VERTICAL" />
+                 <Button fx:id="load_game" focusTraversable="false" mnemonicParsing="false" text="Load" />
+                 <Separator orientation="VERTICAL" />
+                 <Button fx:id="new_game" focusTraversable="false" mnemonicParsing="false" text="New game" />
+               <Separator orientation="VERTICAL" />
+               <Button fx:id="session_history" focusTraversable="false" mnemonicParsing="false" text="session history" />
              </HBox>
          </bottom>
          <top>
-             <HBox alignment="CENTER" fillHeight="false" prefHeight="60.0" prefWidth="0.0"
-                   BorderPane.alignment="CENTER">
-                 <Label fx:id="score_label" text="ciao" textFill="#d4d4d4"/>
-                 <ImageView fx:id="status_image" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
-                            preserveRatio="true"/>
+             <HBox alignment="CENTER" fillHeight="false" prefHeight="60.0" prefWidth="0.0" BorderPane.alignment="CENTER">
+                 <Label fx:id="score_label" text="ciao" textFill="#d4d4d4" />
+                 <ImageView fx:id="status_image" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
              </HBox>
          </top>
          <padding>
