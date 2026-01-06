@@ -161,7 +161,7 @@ class GameBoard {
             SessionHistory.add(size)
         }
         if (diff == null) {
-            diff = Difficulty(bombs, size)
+            diff = Difficulty(bombs.toString(), size)
             size.add(diff)
         }
         diff.add(Game(if (won()) "won" else "lost"))
